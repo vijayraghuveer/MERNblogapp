@@ -21,7 +21,7 @@ const HttpError = require('../models/errorModel')
  
      const { thumbnail } = req.files;
  
-     // Check the file size
+     
      if (thumbnail.size > 2000000) {
        return next(new HttpError("Thumbnail too big. File should be less than 2mb."));
      }
@@ -46,7 +46,7 @@ const HttpError = require('../models/errorModel')
            return next(new HttpError("Post couldn't be created.", 422));
          }
  
-         // Find user and increase post count by 1
+         
          const currentUser = await User.findById(req.user.id);
          const userPostCount = currentUser.posts + 1;
          await User.findByIdAndUpdate(req.user.id, { posts: userPostCount });
@@ -126,12 +126,11 @@ try {
 
    const postId = req.params.id;
    
-   // ReactQuill has a paragraph opening and closing tag with a break tag in between so there are 11 characters in there already.
    
    if (!title || !category || description.length < 12) {
      return next(new HttpError("Fill in all fields.", 422));
    }
-   // Get old post from database
+   
    const oldPost = await Post.findById(postId);
    
    if(req.user.id == oldPost.creator){
@@ -140,7 +139,7 @@ try {
        } else {
          
        
-         // Delete old thumbnail from upload
+         
          fs.unlink(path.join(__dirname, '..', 'uploads', oldPost.thumbnail), async (err) => {
            if (err) {
              return next(new HttpError(err));
@@ -149,7 +148,7 @@ try {
        
          const { thumbnail } = req.files;
        
-         // Check file size
+         
          if (thumbnail.size > 2000000) {
            return next(new HttpError("Thumbnail too big. Should be less than 2mb"));
          }
@@ -197,14 +196,14 @@ try {
      const fileName = post?.thumbnail;
  
      if (req.user.id == post.creator) {
-       // Delete thumbnail from uploads folder
+       
        fs.unlink(path.join(__dirname, '..', 'uploads', fileName), async (err) => {
          if (err) {
            return next(new HttpError(err));
          } else {
            await Post.findByIdAndDelete(postId);
  
-           // Find user and reduce post count by 1
+           
            const currentUser = await User.findById(req.user.id);
            const userPostCount = currentUser?.posts - 1;
  
